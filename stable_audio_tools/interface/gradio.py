@@ -308,14 +308,14 @@ def generate_cond(
     del audio_tensor, Video_tensors, conditioning, audio  # o altri tensori temporanei
     torch.cuda.empty_cache()
     gc.collect()
-    reset_unload_timer()
+    model.to("cpu")
+    reset_unload_timer(current_model)
     return (output_video_path, f"{output_dir}/output.wav")
 
 def toggle_custom_model(selected_model):
     return gr.Row.update(visible=(selected_model == "Custom Model"))
 
-def unload_model_from_gpu():
-    global current_model
+def unload_model_from_gpu(current_model):
     if current_model is not None:
         print("[INFO] Unloading model from GPU to CPU to save VRAM.")
         current_model.to("cpu")
@@ -324,7 +324,7 @@ def unload_model_from_gpu():
         torch.cuda.empty_cache()
         gc.collect()
 
-def reset_unload_timer():
+def reset_unload_timer(current_model):
     global last_model_use_time, unload_timer
 
     last_model_use_time = time.time()
@@ -332,7 +332,7 @@ def reset_unload_timer():
     def check_and_unload():
         time.sleep(MODEL_UNLOAD_TIMEOUT)
         if time.time() - last_model_use_time >= MODEL_UNLOAD_TIMEOUT:
-            unload_model_from_gpu()
+            unload_model_from_gpu(current_model)
 
     if unload_timer is not None and unload_timer.is_alive():
         return  # Timer già in esecuzione

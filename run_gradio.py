@@ -15,7 +15,7 @@ def main(args):
         model_half=args.model_half
     )
     interface.queue()
-    interface.launch( share=args.share, server_name=args.server, auth=(args.username, args.password) if args.username is not None else None)
+    interface.launch(title="AudioX", share=args.share, server_name=args.server, auth=(args.username, args.password) if args.username is not None else None)
 
 if __name__ == "__main__":
     import argparse
