@@ -37,7 +37,7 @@ RUN apt-get update && apt-get install -y ninja-build \
 
 # Ora copia il resto del codice (non invalida il caching delle dipendenze)
 COPY . /app
-
+RUN pip install packaging
 RUN pip install .
 
 # Installa le dipendenze aggiuntive richieste
