@@ -41,7 +41,7 @@ current_sample_size = None
 import threading
 import time
 
-MODEL_UNLOAD_TIMEOUT = 300  # secondi (es. 5 minuti)
+MODEL_UNLOAD_TIMEOUT = 120  # secondi (es. 2 minuti)
 last_model_use_time = time.time()
 unload_timer = None
 
