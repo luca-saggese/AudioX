@@ -41,7 +41,7 @@ setup(
         'wandb',
         'webdataset==0.2.48',
         'x-transformers==1.42.11',
-        'flash_attn'
+ #       'flash_attn'
     ],
 
 )

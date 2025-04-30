@@ -40,11 +40,14 @@ RUN apt-get update && apt-get install -y ninja-build \
 
 # Ora copia il resto del codice (non invalida il caching delle dipendenze)
 COPY . /app
-RUN git clone https://github.com/Dao-AILab/flash-attention.git /tmp/flash-attention && \
-    cd /tmp/flash-attention && \
-    pip install packaging && \
-    pip install . && \
-    rm -rf /tmp/flash-attention
+# RUN git clone https://github.com/Dao-AILab/flash-attention.git /tmp/flash-attention && \
+#     cd /tmp/flash-attention && \
+#     pip install packaging && \
+#     pip install . && \
+#     rm -rf /tmp/flash-attention
+
+RUN pip install packaging
+RUN pip install .
 
 # Installa le dipendenze aggiuntive richieste
 #RUN pip install gradio==4.0.2 sentencepiece
