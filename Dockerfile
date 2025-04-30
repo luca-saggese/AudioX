@@ -75,7 +75,7 @@ ENV HF_HOME=/huggingface
 
 #RUN source patchtransformers.sh
 
-RUN apt-get update && apt-get install vim -y
+#RUN apt-get update && apt-get install vim -y
 
 RUN pip install --upgrade gradio gradio-client
 
