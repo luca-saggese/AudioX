@@ -34,11 +34,17 @@ RUN apt-get update && apt-get install -y ninja-build \
  && pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124 \
  && pip install --no-build-isolation diso
 
+ RUN mkdir -p model
+ RUN wget https://huggingface.co/HKUSTAudio/AudioX/resolve/main/model.ckpt -O model/model.ckpt
+ RUN wget https://huggingface.co/HKUSTAudio/AudioX/resolve/main/config.json -O model/config.json
 
 # Ora copia il resto del codice (non invalida il caching delle dipendenze)
 COPY . /app
-RUN pip install packaging
-RUN pip install .
+RUN git clone https://github.com/Dao-AILab/flash-attention.git /tmp/flash-attention && \
+    cd /tmp/flash-attention && \
+    pip install packaging && \
+    pip install . && \
+    rm -rf /tmp/flash-attention
 
 # Installa le dipendenze aggiuntive richieste
 #RUN pip install gradio==4.0.2 sentencepiece
@@ -57,9 +63,7 @@ ENV HF_HOME=/huggingface
 #RUN conda install -y -c conda-forge ffmpeg
 
 
-RUN mkdir -p model
-RUN wget https://huggingface.co/HKUSTAudio/AudioX/resolve/main/model.ckpt -O model/model.ckpt
-RUN wget https://huggingface.co/HKUSTAudio/AudioX/resolve/main/config.json -O model/config.json
+
 
 # Verifica che NVCC sia disponibile
 #RUN nvcc --version
@@ -79,3 +83,4 @@ EXPOSE 7860
 
 # Comando di default per avviare il server Gradio
 CMD ["python3", "run_gradio.py", "--share", "--model-config", "model/config.json"]
+#python3 run_gradio.py --share --model-config model/config.json

@@ -492,4 +492,4 @@ if __name__ == "__main__":
         model_config_path='./model/config.json',
         share=True
     )
-    ui.launch()
+    ui.launch(server_name="0.0.0.0")

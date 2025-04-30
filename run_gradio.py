@@ -12,8 +12,7 @@ def main(args):
         ckpt_path=args.ckpt_path, 
         pretrained_name=args.pretrained_name, 
         pretransform_ckpt_path=args.pretransform_ckpt_path,
-        model_half=args.model_half,
-        server_name="0.0.0.0"
+        model_half=args.model_half
     )
     interface.queue()
     interface.launch(share=args.share, auth=(args.username, args.password) if args.username is not None else None)
