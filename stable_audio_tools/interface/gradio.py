@@ -38,7 +38,12 @@ current_model = None
 current_sample_rate = None
 current_sample_size = None
 
+import threading
+import time
 
+MODEL_UNLOAD_TIMEOUT = 300  # secondi (es. 5 minuti)
+last_model_use_time = time.time()
+unload_timer = None
 
 def load_model(model_name, model_config=None, model_ckpt_path=None, pretrained_name=None, pretransform_ckpt_path=None, device="cuda", model_half=False):
     global model_configurations
@@ -301,19 +306,38 @@ def generate_cond(
     del video_path
 
     del audio_tensor, Video_tensors, conditioning, audio  # o altri tensori temporanei
-    # if model_type == "diffusion_cond" or model_type == "diffusion_uncond":
-    #     del model
-    #     current_model = None
-    #     current_model_name = None
-    #     current_sample_rate = None
-    #     current_sample_size = None
-    model.to("cpu")
     torch.cuda.empty_cache()
     gc.collect()
+    reset_unload_timer()
     return (output_video_path, f"{output_dir}/output.wav")
 
 def toggle_custom_model(selected_model):
     return gr.Row.update(visible=(selected_model == "Custom Model"))
+
+def unload_model_from_gpu():
+    global current_model
+    if current_model is not None:
+        print("[INFO] Unloading model from GPU to CPU to save VRAM.")
+        current_model.to("cpu")
+        del current_model
+        current_model = None
+        torch.cuda.empty_cache()
+        gc.collect()
+
+def reset_unload_timer():
+    global last_model_use_time, unload_timer
+
+    last_model_use_time = time.time()
+
+    def check_and_unload():
+        time.sleep(MODEL_UNLOAD_TIMEOUT)
+        if time.time() - last_model_use_time >= MODEL_UNLOAD_TIMEOUT:
+            unload_model_from_gpu()
+
+    if unload_timer is not None and unload_timer.is_alive():
+        return  # Timer già in esecuzione
+    unload_timer = threading.Thread(target=check_and_unload, daemon=True)
+    unload_timer.start()
 
 def create_sampling_ui(model_config_map, inpainting=False):
     with gr.Blocks() as demo:
