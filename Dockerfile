@@ -76,7 +76,7 @@ RUN pip uninstall flash-attn
 RUN pip install flash-attn --no-cache-dir --force-reinstall
 
 # Espone la porta per Gradio
-EXPOSE 8080
+EXPOSE 7860
 
 # Comando di default per avviare il server Gradio
 CMD ["python3", "run_gradio.py", "--share", "--model-config", "model/config.json"]
