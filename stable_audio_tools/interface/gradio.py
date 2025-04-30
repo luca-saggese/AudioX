@@ -154,8 +154,10 @@ def generate_cond(
         current_sample_size = sample_size
     else:
         model = current_model
+        model.to(device)
         sample_rate = current_sample_rate
         sample_size = current_sample_size
+
     if video_file is not None:
         video_path = video_file.name
     elif video_path:
@@ -297,15 +299,15 @@ def generate_cond(
         merge_video_audio(video_path, f"{output_dir}/output.wav", output_video_path, seconds_start, seconds_total)
     audio_spectrogram = audio_spectrogram_image(audio, sample_rate=sample_rate)
     del video_path
-    
-    del audio_tensor, Video_tensors, conditioning, audio  # o altri tensori temporanei
-    if model_type == "diffusion_cond" or model_type == "diffusion_uncond":
-        del model
-        current_model = None
-        current_model_name = None
-        current_sample_rate = None
-        current_sample_size = None
 
+    del audio_tensor, Video_tensors, conditioning, audio  # o altri tensori temporanei
+    # if model_type == "diffusion_cond" or model_type == "diffusion_uncond":
+    #     del model
+    #     current_model = None
+    #     current_model_name = None
+    #     current_sample_rate = None
+    #     current_sample_size = None
+    model.to("cpu")
     torch.cuda.empty_cache()
     gc.collect()
     return (output_video_path, f"{output_dir}/output.wav")
