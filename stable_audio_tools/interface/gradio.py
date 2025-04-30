@@ -340,7 +340,7 @@ def reset_unload_timer(current_model):
     unload_timer.start()
 
 def create_sampling_ui(model_config_map, inpainting=False):
-    with gr.Blocks() as demo:
+    with gr.Blocks(title="AudioX") as demo:
         gr.Markdown(
             """
             # 🎧AudioX: Diffusion Transformer for Anything-to-Audio Generation  
