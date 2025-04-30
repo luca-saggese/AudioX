@@ -70,6 +70,8 @@ RUN wget https://huggingface.co/HKUSTAudio/AudioX/resolve/main/config.json -O mo
 
 RUN apt-get update && apt-get install vim -y
 
+RUN pip install --upgrade gradio gradio-client
+
 # Espone la porta per Gradio
 EXPOSE 8080
 
