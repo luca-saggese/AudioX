@@ -72,7 +72,7 @@ RUN apt-get update && apt-get install vim -y
 
 RUN pip install --upgrade gradio gradio-client
 
-RUN pip uninstall flash-attn
+RUN pip uninstall -y flash-attn
 RUN pip install flash-attn --no-cache-dir --force-reinstall
 
 # Espone la porta per Gradio
